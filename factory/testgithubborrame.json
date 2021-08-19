@@ -1,0 +1,9 @@
+{
+	"name": "testgithubborrame",
+	"location": "westeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "b044b366-e930-4d03-a245-27a824b92ee2",
+		"tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+	}
+}

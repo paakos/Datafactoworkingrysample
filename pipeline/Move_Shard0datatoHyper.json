@@ -1,0 +1,189 @@
+{
+	"name": "Move_Shard0datatoHyper",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_5pw",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "."
+					},
+					{
+						"name": "Destination",
+						"value": "dbo.Signals"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "   SELECT \r\n\t\t[FacilityId]\r\n      ,[SignalId]\r\n      ,[Date]\r\n      ,[UnixTimestamp]\r\n      ,[Value]\r\n      , DATEPART(yyyy, date)*100+DATEPART(wk,date) as  Yearweek\r\n      ,[PartitionId]\r\n      ,[EventEnqueuedUtcTime]\r\n      ,[EventProcessedUtcTime]\r\n      ,[InsertedDateTime]\r\n  FROM [dbo].[Signals]",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"validateDataConsistency": false,
+					"dataIntegrationUnits": 32,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "FacilityId",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "FacilityId",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "SignalId",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "SignalId",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "Date",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "Date",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							},
+							{
+								"source": {
+									"name": "UnixTimestamp",
+									"type": "Int64",
+									"physicalType": "bigint"
+								},
+								"sink": {
+									"name": "UnixTimestamp",
+									"type": "Int64",
+									"physicalType": "bigint"
+								}
+							},
+							{
+								"source": {
+									"name": "Value",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 4,
+									"precision": 20
+								},
+								"sink": {
+									"name": "Value",
+									"type": "Decimal",
+									"physicalType": "numeric"
+								}
+							},
+							{
+								"source": {
+									"name": "Yearweek",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "Yearweek",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "PartitionId",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "PartitionId",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "EventEnqueuedUtcTime",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "EventEnqueuedUtcTime",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "EventProcessedUtcTime",
+									"type": "String",
+									"physicalType": "nvarchar"
+								},
+								"sink": {
+									"name": "EventProcessedUtcTime",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "InsertedDateTime",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								},
+								"sink": {
+									"name": "InsertedDateTime",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_5pw",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_5pw",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2021-04-22T07:59:00Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

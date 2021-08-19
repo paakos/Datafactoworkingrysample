@@ -1,0 +1,65 @@
+{
+	"name": "SourceDataset_5pw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "FacilityId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "SignalId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "UnixTimestamp",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "Value",
+				"type": "decimal",
+				"precision": 20,
+				"scale": 4
+			},
+			{
+				"name": "Yearweek",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PartitionId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "EventEnqueuedUtcTime",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EventProcessedUtcTime",
+				"type": "nvarchar"
+			},
+			{
+				"name": "InsertedDateTime",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

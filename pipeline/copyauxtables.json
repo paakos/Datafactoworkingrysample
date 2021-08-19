@@ -1,0 +1,526 @@
+{
+	"name": "copyauxtables",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach_v0b",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.cw_items",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy_v0b",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [
+								{
+									"name": "Source",
+									"value": "dbo.@{item().source.table}"
+								},
+								{
+									"name": "Destination",
+									"value": "dbo.@{item().destination.table}"
+								}
+							],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"tableOption": "autoCreate"
+								},
+								"enableStaging": false,
+								"validateDataConsistency": false,
+								"translator": {
+									"value": "@item().copyActivity.translator",
+									"type": "Expression"
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "SourceDataset_v0b",
+									"type": "DatasetReference",
+									"parameters": {
+										"cw_table": "@item().source.table"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DestinationDataset_v0b",
+									"type": "DatasetReference",
+									"parameters": {
+										"cw_table": "@item().destination.table"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"cw_items": {
+				"type": "Array",
+				"defaultValue": [
+					{
+						"source": {
+							"table": "EQUIPO"
+						},
+						"destination": {
+							"table": "EQUIPO"
+						},
+						"copyActivity": {
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ID_EQUIPO",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "ID_EQUIPO",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "ID_EQUIPO_MODELO",
+											"type": "Int16",
+											"physicalType": "smallint"
+										},
+										"sink": {
+											"name": "ID_EQUIPO_MODELO",
+											"type": "Int16"
+										}
+									},
+									{
+										"source": {
+											"name": "ID_INSTALACION",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "ID_INSTALACION",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "ID_EQUIPO_TEXTO",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "ID_EQUIPO_TEXTO",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "ID_TIPO_PLANTA",
+											"type": "Int16",
+											"physicalType": "smallint"
+										},
+										"sink": {
+											"name": "ID_TIPO_PLANTA",
+											"type": "Int16"
+										}
+									},
+									{
+										"source": {
+											"name": "ID_TIPO_ZONA",
+											"type": "Int16",
+											"physicalType": "smallint"
+										},
+										"sink": {
+											"name": "ID_TIPO_ZONA",
+											"type": "Int16"
+										}
+									},
+									{
+										"source": {
+											"name": "ID_TIPO_SUBZONA",
+											"type": "Int16",
+											"physicalType": "smallint"
+										},
+										"sink": {
+											"name": "ID_TIPO_SUBZONA",
+											"type": "Int16"
+										}
+									},
+									{
+										"source": {
+											"name": "ID_ALIAS_ZONA",
+											"type": "Int16",
+											"physicalType": "smallint"
+										},
+										"sink": {
+											"name": "ID_ALIAS_ZONA",
+											"type": "Int16"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						}
+					},
+					{
+						"source": {
+							"table": "EQUIPO_SENAL"
+						},
+						"destination": {
+							"table": "EQUIPO_SENAL"
+						},
+						"copyActivity": {
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ID_EQUIPO_SENAL",
+											"type": "Int64",
+											"physicalType": "bigint"
+										},
+										"sink": {
+											"name": "ID_EQUIPO_SENAL",
+											"type": "Int64"
+										}
+									},
+									{
+										"source": {
+											"name": "ID_EQUIPO",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "ID_EQUIPO",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "ID_SENAL",
+											"type": "Int64",
+											"physicalType": "bigint"
+										},
+										"sink": {
+											"name": "ID_SENAL",
+											"type": "Int64"
+										}
+									},
+									{
+										"source": {
+											"name": "ID_TIPO_SENAL",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "ID_TIPO_SENAL",
+											"type": "Int32"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						}
+					},
+					{
+						"source": {
+							"table": "EQUIPO_TEXTO"
+						},
+						"destination": {
+							"table": "EQUIPO_TEXTO"
+						},
+						"copyActivity": {
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ID_EQUIPO_TEXTO",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "ID_EQUIPO_TEXTO",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "DESCRIPCION",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "DESCRIPCION",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "GENERICO",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 0,
+											"precision": 1
+										},
+										"sink": {
+											"name": "GENERICO",
+											"type": "Decimal"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						}
+					},
+					{
+						"source": {
+							"table": "EQUIPO_TEXTO_IDIOMA"
+						},
+						"destination": {
+							"table": "EQUIPO_TEXTO_IDIOMA"
+						},
+						"copyActivity": {
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ID_EQUIPO_TEXTO",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "ID_EQUIPO_TEXTO",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "ID_IDIOMA",
+											"type": "Int16",
+											"physicalType": "smallint"
+										},
+										"sink": {
+											"name": "ID_IDIOMA",
+											"type": "Int16"
+										}
+									},
+									{
+										"source": {
+											"name": "DESCRIPCION",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "DESCRIPCION",
+											"type": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						}
+					},
+					{
+						"source": {
+							"table": "Facilities"
+						},
+						"destination": {
+							"table": "Facilities"
+						},
+						"copyActivity": {
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "FacilityId",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "FacilityId",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "LocationId",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "LocationId",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "WithrawalDate",
+											"type": "DateTime",
+											"physicalType": "datetime"
+										},
+										"sink": {
+											"name": "WithrawalDate",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"name": "TimeZoneId",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "TimeZoneId",
+											"type": "Int32"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						}
+					},
+					{
+						"source": {
+							"table": "SENAL_TEXTO_IDIOMA"
+						},
+						"destination": {
+							"table": "SENAL_TEXTO_IDIOMA"
+						},
+						"copyActivity": {
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ID_SENAL_TEXTO",
+											"type": "Int16",
+											"physicalType": "smallint"
+										},
+										"sink": {
+											"name": "ID_SENAL_TEXTO",
+											"type": "Int16"
+										}
+									},
+									{
+										"source": {
+											"name": "ID_IDIOMA",
+											"type": "Int16",
+											"physicalType": "smallint"
+										},
+										"sink": {
+											"name": "ID_IDIOMA",
+											"type": "Int16"
+										}
+									},
+									{
+										"source": {
+											"name": "DESCRIPCION",
+											"type": "String",
+											"physicalType": "varchar"
+										},
+										"sink": {
+											"name": "DESCRIPCION",
+											"type": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						}
+					},
+					{
+						"source": {
+							"table": "SignalInfo"
+						},
+						"destination": {
+							"table": "SignalInfo"
+						},
+						"copyActivity": {
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "SignalId",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "SignalId",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "FacilityId",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "FacilityId",
+											"type": "Int32"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						}
+					}
+				]
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-04-22T11:29:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

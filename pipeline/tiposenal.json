@@ -1,0 +1,200 @@
+{
+	"name": "tiposenal",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_pg7",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "dbo.TIPO_SENAL"
+					},
+					{
+						"name": "Destination",
+						"value": "dbo.TIPO_SENAL"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"tableOption": "autoCreate"
+					},
+					"enableStaging": false,
+					"validateDataConsistency": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "ID_TIPO_SENAL",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "ID_TIPO_SENAL",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_SENAL_TEXTO",
+									"type": "Int16",
+									"physicalType": "smallint"
+								},
+								"sink": {
+									"name": "ID_SENAL_TEXTO",
+									"type": "Int16"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_TIPO_SENAL_AGRUPACION",
+									"type": "Int16",
+									"physicalType": "smallint"
+								},
+								"sink": {
+									"name": "ID_TIPO_SENAL_AGRUPACION",
+									"type": "Int16"
+								}
+							},
+							{
+								"source": {
+									"name": "ORDEN",
+									"type": "Int16",
+									"physicalType": "smallint"
+								},
+								"sink": {
+									"name": "ORDEN",
+									"type": "Int16"
+								}
+							},
+							{
+								"source": {
+									"name": "VALOR_MAXIMO",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "VALOR_MAXIMO",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "VALOR_MINIMO",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "VALOR_MINIMO",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "DESCRIPCION",
+									"type": "String",
+									"physicalType": "varchar"
+								},
+								"sink": {
+									"name": "DESCRIPCION",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_TIPO_COMPACTACION",
+									"type": "Int16",
+									"physicalType": "smallint"
+								},
+								"sink": {
+									"name": "ID_TIPO_COMPACTACION",
+									"type": "Int16"
+								}
+							},
+							{
+								"source": {
+									"name": "VISUALIZACION",
+									"type": "Int16",
+									"physicalType": "smallint"
+								},
+								"sink": {
+									"name": "VISUALIZACION",
+									"type": "Int16"
+								}
+							},
+							{
+								"source": {
+									"name": "AGREGACION",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 1
+								},
+								"sink": {
+									"name": "AGREGACION",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_TIPO_ALERTA",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "ID_TIPO_ALERTA",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_UNIDAD_PERFIL",
+									"type": "Int32",
+									"physicalType": "int"
+								},
+								"sink": {
+									"name": "ID_UNIDAD_PERFIL",
+									"type": "Int32"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_pg7",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_pg7",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2021-04-22T11:39:17Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

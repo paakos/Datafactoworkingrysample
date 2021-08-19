@@ -1,0 +1,78 @@
+{
+	"name": "SourceDataset_pg7",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Auxtables",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ID_TIPO_SENAL",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ID_SENAL_TEXTO",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "ID_TIPO_SENAL_AGRUPACION",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "ORDEN",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "VALOR_MAXIMO",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "VALOR_MINIMO",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DESCRIPCION",
+				"type": "varchar"
+			},
+			{
+				"name": "ID_TIPO_COMPACTACION",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "VISUALIZACION",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "AGREGACION",
+				"type": "decimal",
+				"precision": 1,
+				"scale": 0
+			},
+			{
+				"name": "ID_TIPO_ALERTA",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ID_UNIDAD_PERFIL",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "TIPO_SENAL"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

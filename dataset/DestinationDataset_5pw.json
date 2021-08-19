@@ -1,0 +1,78 @@
+{
+	"name": "DestinationDataset_5pw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "FacilityId",
+				"type": "int",
+				"precision": 10,
+				"scale": 0
+			},
+			{
+				"name": "SignalId",
+				"type": "int",
+				"precision": 10,
+				"scale": 0
+			},
+			{
+				"name": "Date",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "UnixTimestamp",
+				"type": "bigint",
+				"precision": 19,
+				"scale": 0
+			},
+			{
+				"name": "Value",
+				"type": "numeric",
+				"precision": 20,
+				"scale": 4
+			},
+			{
+				"name": "Yearweek",
+				"type": "int",
+				"precision": 10,
+				"scale": 0
+			},
+			{
+				"name": "PartitionId",
+				"type": "int",
+				"precision": 10,
+				"scale": 0
+			},
+			{
+				"name": "EventEnqueuedUtcTime",
+				"type": "nvarchar",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "EventProcessedUtcTime",
+				"type": "nvarchar",
+				"precision": 0,
+				"scale": 0
+			},
+			{
+				"name": "InsertedDateTime",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Signals"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
