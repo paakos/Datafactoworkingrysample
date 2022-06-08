@@ -1,0 +1,452 @@
+{
+	"name": "centerSplitter_V3",
+	"properties": {
+		"description": "parametrizado de column en el source de copy data",
+		"activities": [
+			{
+				"name": "readtableswithcenter",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "  select top 1 [schema],[table]\n  from [Metadata].[Columns] \n  where  [column]  like '%centro%' ",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "MetadataCollection",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "iteratetables",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "setarrayvalues",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('sarray2')",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "columstoarray",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "getcolumns4actualtable",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "columnbytable",
+								"value": {
+									"value": "@activity('getcolumns4actualtable').output.value",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "getcolumns4actualtable",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('select name from sys.columns where object_id=object_id(''',item().table, ''')')",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "sourcetables",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": false
+							}
+						},
+						{
+							"name": "setcolumnslist",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "columstoarray",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "columnstostring",
+								"value": {
+									"value": "@replace(replace(replace(replace(replace(replace(replace(string(variables('columnbytable')),'{',''),  '}','') , 'name',''), ':',''),'\"',''), '\\\\\\',''), '\\','')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Copytables",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "setcolumnslist",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "Sefilteredcolum",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat('select ', replace(replace(variables('columnstostring'),'[','') , ']',''),' From ', item().Schema,'.' ,item().table, ' where ',  variables('filteredcolumn') ,'  =' , pipeline().parameters.centroid)",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"preCopyScript": {
+										"value": "@{concat( 'ALTER TABLE ',item().schema,'.',  item().table,' NOCHECK CONSTRAINT all;', ' delete from ', item().schema,'.',item().table)}",
+										"type": "Expression"
+									},
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": true,
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "sourcetables",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "destinationtables",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": {
+											"value": "@item().Schema",
+											"type": "Expression"
+										},
+										"tableName": {
+											"value": "@item().table",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "auditinserts",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Copytables",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[audits]",
+								"storedProcedureParameters": {
+									"executiontime": {
+										"value": {
+											"value": "@utcNow()",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"notes": {
+										"value": {
+											"value": "@concat('Errores -->',string(activity('Copytables').output.errors))",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"pipelineid": {
+										"value": {
+											"value": "@pipeline().Pipeline",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"varname": {
+										"value": {
+											"value": "@Concat(item().Schema,' --> ',item().table)",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"varvalue": {
+										"value": {
+											"value": "@concat('Numero de filas escritas -->',string(activity('Copytables').output.dataWritten))",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "demoETL",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "creacomando",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "setcolumnslist",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "Sefilteredcolum",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "testw",
+								"value": {
+									"value": "@concat('select ', replace(replace(variables('columnstostring'),'[','') , ']',''),' From ', item().Schema,'.' ,item().table, ' where ',  variables('filteredcolumn') ,'  =' , pipeline().parameters.centroid)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "auditinserts_copy1",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "creacomando",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[debugin]",
+								"storedProcedureParameters": {
+									"executiontime": {
+										"value": {
+											"value": "@utcNow()",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"notes": {
+										"value": "",
+										"type": "String"
+									},
+									"pipelineid": {
+										"value": {
+											"value": "@pipeline().Pipeline",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"varname": {
+										"value": {
+											"value": "@Concat(item().Schema,' --> ',item().table)",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"varvalue": {
+										"value": {
+											"value": "@concat('query  -->',string(variables('testw')))",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "demoETL",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "getfiltercolumn",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@concat(' select top 1 [filtercoloumn] from [Metadata].[Columns] where [table] = ''',item().table,'''')",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "MetadataCollection",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": false
+							}
+						},
+						{
+							"name": "Sefilteredcolum",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "getfiltercolumn",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "filteredcolumn",
+								"value": {
+									"value": "@replace(replace(replace(replace(replace(replace(replace(replace(replace(string(activity('getfiltercolumn').output.value),'{',''),  '}','') , 'name',''), ':',''),'\"',''), '\\\\\\',''), '\\',''),'[filtercoloumn',''),']','')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "setarrayvalues",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "readtableswithcenter",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "sarray2",
+					"value": {
+						"value": "@array(activity('readtableswithcenter').output.value)\n\n",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"tablename": {
+				"type": "string",
+				"defaultValue": "Act_MotivoLECentro"
+			},
+			"centroid": {
+				"type": "string",
+				"defaultValue": "'DDE10EE5-D49F-45E6-889A-C87FC9A44767'"
+			}
+		},
+		"variables": {
+			"sarray2": {
+				"type": "Array"
+			},
+			"columnbytable": {
+				"type": "Array"
+			},
+			"columnstostring": {
+				"type": "String"
+			},
+			"testw": {
+				"type": "String"
+			},
+			"filteredcolumn": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-02-10T08:52:29Z"
+	}
+}
