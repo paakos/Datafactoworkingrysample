@@ -1,0 +1,112 @@
+{
+	"name": "Main_SchemaReader",
+	"properties": {
+		"activities": [
+			{
+				"name": "ReadSchema",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "select  name from sys.tables",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DemoDWH",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "setlistoftablesarray",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "ReadSchema",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "listoftables",
+					"value": {
+						"value": "@array(activity('ReadSchema').output.value)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "iterateTables",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "setlistoftablesarray",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('listoftables')",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "callSchemaReadres",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "readcolumns_lab",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"tablename": {
+										"value": "@item().name",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"schema": {
+				"type": "Array"
+			},
+			"listoftables": {
+				"type": "Array"
+			},
+			"asString": {
+				"type": "String"
+			},
+			"metadataarray": {
+				"type": "Array"
+			},
+			"asarray": {
+				"type": "Array"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-02-07T12:50:57Z"
+	}
+}

@@ -1,0 +1,170 @@
+{
+	"name": "readcolumns_lab",
+	"properties": {
+		"activities": [
+			{
+				"name": "GetTableColumnsandTypes",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat('select  ss.name as [Schema], so.name as [table], sc.name  as [column], st.name as [type],sc.max_length,isnull(st.collation_name,'''') as Collation from sys.objects so inner join sys.schemas ss on so.schema_id = ss.schema_id inner join sys.columns sc on so.object_id=sc.object_id inner join sys.types st on sc.system_type_id =st.system_type_id and sc.user_type_id = st.user_type_id where so.object_id = object_id(''',pipeline().parameters.tablename, ''')')",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DemoDWH",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Setvartostringandconvert",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "GetTableColumnsandTypes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "asarray",
+					"value": {
+						"value": "@array(activity('GetTableColumnsandTypes').output.value)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "RegisterEachcolumn",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Setvartostringandconvert",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('asarray')",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Stored procedure1",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[Metadata].[registercolumns]",
+								"storedProcedureParameters": {
+									"collation": {
+										"value": {
+											"value": "@item().Collation",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"column": {
+										"value": {
+											"value": "@item().column",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"max_lengt": {
+										"value": {
+											"value": "@item().max_length",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									},
+									"schema": {
+										"value": {
+											"value": "@item().Schema",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"table": {
+										"value": {
+											"value": "@item().table",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"type": {
+										"value": {
+											"value": "@item().type",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"filteredColumn": {
+										"value": {
+											"value": "@if(equals(toLower(item().column),'centroid'),'centroid' ,  if(equals(toLower(item().column),'idcentro'),'idcentro' ,    if(equals(toLower(item().column),'ProductoCentroId'),'ProductoCentroId' ,  if(equals(toLower(item().column),'ProductoCentroId'),'ProductoCentroId' ,  if(equals(toLower(item().column),'IdCentroExterno'),'IdCentroExterno' ,  if(equals(toLower(item().column),'CentroIdCasiopea'),'CentroIdCasiopea' ,  if(equals(toLower(item().column),'AgrupadorCentroId'),'AgrupadorCentroId' ,  if(equals(toLower(item().column),'IdCentroCreador'),'IdCentroCreador' ,  'IdCentroEfi'  )  ) ) ) ) )))",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDatabase2",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"tablename": {
+				"type": "string",
+				"defaultValue": "Act_MotivoLECentro"
+			}
+		},
+		"variables": {
+			"metadataarray": {
+				"type": "Array"
+			},
+			"asString": {
+				"type": "Array"
+			},
+			"asarray": {
+				"type": "Array"
+			},
+			"filteredcolumn": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-02-07T12:53:58Z"
+	}
+}
