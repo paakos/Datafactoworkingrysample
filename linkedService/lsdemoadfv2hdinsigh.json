@@ -1,0 +1,29 @@
+{
+	"name": "lsdemoadfv2hdinsigh",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "HDInsightOnDemand",
+		"typeProperties": {
+			"clusterType": "spark",
+			"clusterSize": 4,
+			"timeToLive": "00:05:00",
+			"version": "3.6",
+			"hostSubscriptionId": "1dd17e78-55dc-499b-8aa1-553fe4670665",
+			"clusterResourceGroup": "rgdemoADFv2",
+			"servicePrincipalId": "658c1b19-a7ef-4bf5-8e2f-88d4b44f4e44",
+			"tenant": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+			"clusterNamePrefix": "demoadfv2spark2",
+			"sparkVersion": "",
+			"additionalLinkedServiceNames": [],
+			"linkedServiceName": {
+				"referenceName": "lssademoadfv2",
+				"type": "LinkedServiceReference"
+			},
+			"headNodeSize": "",
+			"dataNodeSize": "",
+			"zookeeperNodeSize": "",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRFTU9BREZWMjIwMTlfYmZlYjk5NmUtOWJkYi00NDE4LWE3ZDAtZDRkYjgxNjA3OWRmIg0KfQ=="
+		}
+	}
+}

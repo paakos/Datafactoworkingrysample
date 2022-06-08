@@ -1,0 +1,26 @@
+{
+	"name": "demosinkblob",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "demosinkblob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureBlob",
+		"typeProperties": {
+			"format": {
+				"type": "TextFormat",
+				"columnDelimiter": ",",
+				"nullValue": "\\N",
+				"treatEmptyAsNull": true,
+				"firstRowAsHeader": false
+			},
+			"fileName": {
+				"value": "@CONCAT('Incremental-', pipeline().RunId, '.txt')",
+				"type": "Expression"
+			},
+			"folderPath": "incrementalload"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

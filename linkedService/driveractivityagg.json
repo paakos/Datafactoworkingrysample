@@ -1,0 +1,12 @@
+{
+	"name": "driveractivityagg",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "integrated security=False;encrypt=True;connection timeout=30;data source=paakos.database.windows.net;initial catalog=CourierNW_Agg;user id=unipaak",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRFTU9BREZWMjIwMTlfMWY3ZjMxN2YtNDY1Ni00NjI5LThkOWQtM2Y4YmFlNWVlMDgzIg0KfQ=="
+		}
+	}
+}

@@ -1,0 +1,15 @@
+{
+	"name": "watermarkdataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "demoETL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"typeProperties": {
+			"tableName": "[dbo].[watermarktable]"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,15 @@
+{
+	"name": "Sourcedataset1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "demoETL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"typeProperties": {
+			"tableName": "[dbo].[data_source_table]"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

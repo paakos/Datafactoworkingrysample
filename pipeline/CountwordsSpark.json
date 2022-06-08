@@ -1,0 +1,35 @@
+{
+	"name": "CountwordsSpark",
+	"properties": {
+		"activities": [
+			{
+				"name": "Spark1",
+				"type": "HDInsightSpark",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"rootPath": "adftutorial/spark/inputfiles",
+					"entryFilePath": "WordCount_Spark.py",
+					"sparkJobLinkedService": {
+						"referenceName": "lssademoadfv2",
+						"type": "LinkedServiceReference"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "lsdemoadfv2hdinsigh",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2019-01-15T17:13:18Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
